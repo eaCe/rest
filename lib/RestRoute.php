@@ -124,6 +124,20 @@ class RestRoute
     }
 
     /**
+     * @param array $content
+     * @param string $statusCode
+     * @return void
+     * @throws JsonException
+     */
+    public function sendContent(array $content, string $statusCode = rex_response::HTTP_OK) {
+        rex_response::cleanOutputBuffers();
+        rex_response::sendContentType('application/json');
+        rex_response::setStatus($statusCode);
+        rex_response::sendContent(json_encode($content, JSON_THROW_ON_ERROR));
+        exit();
+    }
+
+    /**
      * @param string $message
      * @param string $statusCode
      * @return void
