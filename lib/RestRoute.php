@@ -90,6 +90,14 @@ class RestRoute
     }
 
     /**
+     * @return string
+     */
+    public function getRequestMethod(): string
+    {
+        return filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_ENCODED);
+    }
+
+    /**
      * @return void
      * @throws rex_exception
      */
