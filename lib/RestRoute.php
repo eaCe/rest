@@ -78,16 +78,14 @@ class RestRoute
 
     /**
      * @return void
-     * @throws rex_exception
+     * @throws JsonException
      */
-    public function validateMethod(): void
+    public function validateRequestMethod(): void
     {
-        foreach ($this->args['methods'] as $method) {
-            if (in_array($method, $this->allowedMethods, true)) {
-                continue;
-            }
+        $method = filter_var($_SERVER['REQUEST_METHOD'], FILTER_SANITIZE_STRING);
 
-            throw new rex_exception(sprintf('Method "%s" not allowed!', $method));
+        if (!in_array($method, $this->methods, true)) {
+            $this->sendError(sprintf('Method "%s" not allowed!', $method), rex_response::HTTP_FORBIDDEN);
         }
     }
 
@@ -123,5 +121,25 @@ class RestRoute
     public function executeCallback(): void
     {
         call_user_func($this->callback, $this);
+    }
+
+    /**
+     * @param string $message
+     * @param string $statusCode
+     * @return void
+     * @throws JsonException
+     */
+    private function sendError(string $message, string $statusCode): void
+    {
+        $response = [
+            'message' => $message,
+            'status' => $statusCode,
+        ];
+
+        rex_response::cleanOutputBuffers();
+        rex_response::sendContentType('application/json');
+        rex_response::setStatus($statusCode);
+        rex_response::sendContent(json_encode($response, JSON_THROW_ON_ERROR));
+        exit();
     }
 }

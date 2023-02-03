@@ -37,6 +37,8 @@ class Rest
 
     /**
      * @return bool
+     * @throws JsonException
+     * @throws rex_exception
      */
     public static function handleRoutes(): bool
     {
@@ -51,6 +53,7 @@ class Rest
             return false;
         }
 
+        /** @var RestRoute $route */
         foreach (self::$routes as $route) {
             $routePath = implode('/', [self::$baseRoute, $route->getPath()]);
 
@@ -59,6 +62,7 @@ class Rest
             }
 
             // TODO: stuff :)
+            $route->validateRequestMethod();
             $route->executeCallback();
         }
 
