@@ -1,10 +1,3 @@
-# rex_repo_template
-REDAXO AddOn english readme
+# REST - :construction: WIP
 
-please use in your classes a namespace as
-
-```
-namespace FriendsOfRedaxo\[AddOnNameWithoutSpacesAndAsCamelCase]
-```
-
-in order to use non deprecated features please don't use PlugIns anymore
+Einfache Möglichkeit eine REST API in REDAXO zu erstellen
