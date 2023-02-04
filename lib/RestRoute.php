@@ -4,7 +4,7 @@ class RestRoute
 {
     protected string $route;
     protected array $methods;
-    protected string $callback;
+    protected mixed $callback;
     protected array $arguments;
     protected array $args;
     protected array $params;
