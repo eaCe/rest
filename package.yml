@@ -2,7 +2,28 @@ package: rest
 version: '0.0.1-dev'
 author: 'eaCe'
 supportpage: https://github.com/eaCe/rest
+
 requires:
-    redaxo: '^5.13.0'
-    php:
-        version: '>=7.4, <9'
+  redaxo: '^5.13.0'
+  php:
+    version: '>=7.4, <9'
+
+installer_ignore:
+  - .git
+  - .github
+  - node_modules
+  - tests
+  - tests_output
+  - .editorconfig
+  - .eslintrc.js
+  - .gitignore
+  - .stylelintrc.js
+  - composer.json
+  - composer.lock
+  - nightwatch.conf.js
+  - package.json
+  - package-lock.json
+  - yarn.lock
+  - phpcs.xml
+  - phpunit.xml
+  - phpunit.result.cache
