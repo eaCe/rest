@@ -71,7 +71,7 @@ class Rest
                 }
             }
 
-            if (mb_substr(self::getCurrentPath(), 0, mb_strlen($routePath)) !== $routePath && empty($matches)) {
+            if ($routePath !== self::getCurrentPath() && empty($matches)) {
                 continue;
             }
 
@@ -79,8 +79,15 @@ class Rest
             $route->validateRequestMethod();
             $route->validatePermission();
             $route->executeCallback();
+            exit();
         }
 
-        return true;
+        rex_response::cleanOutputBuffers();
+        rex_response::sendContentType('application/json');
+        rex_response::setStatus(rex_response::HTTP_NOT_FOUND);
+        rex_response::sendContent(json_encode([
+            'message' => 'Not found!',
+            'status' => rex_response::HTTP_NOT_FOUND,
+        ], JSON_THROW_ON_ERROR));
     }
 }
