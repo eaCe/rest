@@ -23,4 +23,16 @@ function myCallbackFn($route) {
 
     $route->sendContent($data);
 }
+
+// https://domain.de/api/my-call/12
+Rest::registerRoute([
+    'route' => 'my-call/{articleID}',
+    'methods' => array('POST', 'GET'),
+    'callback' => 'myCallbackWithParamFn',
+]);
+
+function myCallbackWithParamFn($route) {
+    $articleID = $route->getParam('articleID', 'int');
+    // ...
+}
 ```

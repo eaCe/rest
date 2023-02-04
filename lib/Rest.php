@@ -57,11 +57,25 @@ class Rest
         foreach (self::$routes as $route) {
             $routePath = implode('/', [self::$baseRoute, $route->getPath()]);
 
-            if (mb_substr(self::getCurrentPath(), 0, mb_strlen($routePath)) !== $routePath) {
+            $patternRegex = '/\\\{[a-zA-Z0-9\_\-]+\\\\\\}/';
+            $pattern = "@^" . preg_replace($patternRegex, '([a-zA-Z0-9\-\_]+)', preg_quote($routePath, null)) . "$@D";
+
+            preg_match($pattern, $currentPath, $matches);
+            array_shift($matches);
+            preg_match_all('/\{[a-zA-Z0-9\_\-]+\}/', $routePath, $keys);
+
+            if (!empty($matches)) {
+                for ($i = 0, $iMax = count($matches); $i < $iMax; $i++) {
+                    $matches[trim($keys[0][$i], '{}')] = $matches[$i];
+                    unset($matches[$i]);
+                }
+            }
+
+            if (mb_substr(self::getCurrentPath(), 0, mb_strlen($routePath)) !== $routePath && empty($matches)) {
                 continue;
             }
 
-            // TODO: stuff :)
+            $route->setParams($matches);
             $route->validateRequestMethod();
             $route->executeCallback();
         }

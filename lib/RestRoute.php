@@ -7,6 +7,7 @@ class RestRoute
     protected string $callback;
     protected array $arguments;
     protected array $args;
+    protected array $params;
     private array $allowedMethods = [
         'GET',
         'POST',
@@ -120,6 +121,37 @@ class RestRoute
         if (!is_callable($this->args['callback'])) {
             throw new rex_exception(sprintf('Callback "%s" is not callable!', $this->args['callback']));
         }
+    }
+
+    /**
+     * @param array $params
+     * @return void
+     */
+    public function setParams(array $params): void
+    {
+        $this->params = $params;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param string $key
+     * @param string $type
+     * @return array|bool|float|int|mixed|object|string|null
+     */
+    public function getParam(string $key, string $type = '')
+    {
+        if (isset($this->params[$key])) {
+            return rex_type::cast($this->params[$key], $type);
+        }
+
+        return null;
     }
 
     /**
