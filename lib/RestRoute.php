@@ -8,6 +8,7 @@ class RestRoute
     protected array $arguments;
     protected array $args;
     protected array $params;
+    protected string $permission;
     private array $allowedMethods = [
         'GET',
         'POST',
@@ -25,6 +26,7 @@ class RestRoute
         $this->setRoute();
         $this->setMethods();
         $this->setCallback();
+        $this->setPermission();
     }
 
     /**
@@ -122,6 +124,33 @@ class RestRoute
             throw new rex_exception(sprintf('Callback "%s" is not callable!', $this->args['callback']));
         }
     }
+
+    /**
+     * @return void
+     */
+    public function setPermission(): void
+    {
+        if (!isset($this->args['permission']) || $this->args['permission'] === '') {
+            $this->permission = '';
+            return;
+        }
+
+        $this->permission = $this->args['permission'];
+    }
+
+    /**
+     * @return void
+     * @throws JsonException
+     */
+    public function validatePermission(): void
+    {
+        if ($this->permission !== '') {
+            if (!rex::getUser() || ($this->permission === 'admin' && !rex::getUser()->isAdmin()) || !rex::getUser()->hasPerm($this->permission)) {
+                $this->sendError('Only authenticated users can access the REST API', rex_response::HTTP_FORBIDDEN);
+            }
+        }
+    }
+
 
     /**
      * @param array $params
