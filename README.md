@@ -28,11 +28,9 @@ function myCallbackFn($route) {
 Rest::registerRoute([
     'route' => 'my-call/{articleID}',
     'methods' => array('POST', 'GET'),
-    'callback' => 'myCallbackWithParamFn',
+    'callback' => function ($route) {
+        $articleID = $route->getParam('articleID', 'int');
+        // ...
+    },
 ]);
-
-function myCallbackWithParamFn($route) {
-    $articleID = $route->getParam('articleID', 'int');
-    // ...
-}
 ```
