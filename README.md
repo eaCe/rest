@@ -1,6 +1,6 @@
-# REST - :construction: WIP
+# REST API für REDAXO 5
 
-Einfache Möglichkeit eine REST API in REDAXO zu erstellen
+Eine einfache Möglichkeit eine REST API in REDAXO zu erstellen.
 
 ## Route registrieren
 
