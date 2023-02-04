@@ -3,7 +3,7 @@
 class Rest
 {
     public static $baseRoute = '';
-    protected static $routes = [];
+    private static $routes = [];
 
     /**
      * @param array $routeArgs
@@ -53,8 +53,8 @@ class Rest
             return false;
         }
 
-        /** @var RestRoute $route */
         foreach (self::$routes as $route) {
+            assert($route instanceof RestRoute);
             $routePath = implode('/', [self::$baseRoute, $route->getPath()]);
 
             $patternRegex = '/\\\{[a-zA-Z0-9\_\-]+\\\\\\}/';
