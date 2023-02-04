@@ -33,4 +33,25 @@ Rest::registerRoute([
         // ...
     },
 ]);
+
+// Full configuration
+[
+    'route' => '/my-call/{articleID}',
+    'permission' => 'admin', // addon[]
+    'methods' => array('POST', 'GET'),
+    'validations' => [
+        'articleID' => 'int', // number, bool/boolean, 
+    ],
+    'callback' => static function($route) {
+        /** @var RestRoute $route */
+        $data = [
+            'lorem' => 'ipsum',
+            'dolor' => [
+                'sit' => 'amet',
+            ]
+        ];
+
+        $route->sendContent($data);
+    },
+]
 ```
