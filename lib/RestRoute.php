@@ -9,6 +9,7 @@ class RestRoute
     protected array $args;
     protected array $params;
     protected string $permission;
+    protected array $validations;
     private array $allowedMethods = [
         'GET',
         'POST',
@@ -26,6 +27,7 @@ class RestRoute
         $this->setRoute();
         $this->setMethods();
         $this->setCallback();
+        $this->setValidations();
         $this->setPermission();
     }
 
@@ -140,6 +142,19 @@ class RestRoute
 
     /**
      * @return void
+     */
+    public function setValidations(): void
+    {
+        if (!isset($this->args['validations']) || empty($this->args['validations'])) {
+            $this->validations = [];
+            return;
+        }
+
+        $this->validations = $this->args['validations'];
+    }
+
+    /**
+     * @return void
      * @throws JsonException
      */
     public function validatePermission(): void
@@ -151,6 +166,48 @@ class RestRoute
         }
     }
 
+    /**
+     * @return void
+     * @throws JsonException
+     */
+    public function validateParams(): void
+    {
+        if (empty($this->validations)) {
+            return;
+        }
+
+        foreach ($this->validations as $paramName => $type) {
+            $param = $this->getParam($paramName);
+
+            if (!$param) {
+                continue;
+            }
+
+            if (!$this->validateType($type, $param)) {
+                $this->sendError(sprintf('Param "%s" needs to be "%s"!', $paramName, $type), rex_response::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    /**
+     * @param string $type
+     * @param mixed $value
+     * @return bool
+     */
+    private function validateType(string $type, mixed $value): bool
+    {
+        switch ($type) {
+            case 'int':
+                return (bool) filter_var($value, FILTER_VALIDATE_INT);
+            case 'number':
+                return (bool) is_numeric($value);
+            case 'bool':
+            case 'boolean':
+                return is_bool($value) || in_array($value, array('true', 'false', '1', '0'), true);
+            default:
+                return false;
+        }
+    }
 
     /**
      * @param array $params
@@ -198,7 +255,8 @@ class RestRoute
      * @return void
      * @throws JsonException
      */
-    public function sendContent(array $content, string $statusCode = rex_response::HTTP_OK) {
+    public function sendContent(array $content, string $statusCode = rex_response::HTTP_OK)
+    {
         rex_response::cleanOutputBuffers();
         rex_response::sendContentType('application/json');
         rex_response::setStatus($statusCode);

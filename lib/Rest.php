@@ -78,6 +78,7 @@ class Rest
             $route->setParams($matches);
             $route->validateRequestMethod();
             $route->validatePermission();
+            $route->validateParams();
             $route->executeCallback();
             exit();
         }
