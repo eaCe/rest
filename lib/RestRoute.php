@@ -212,7 +212,7 @@ class RestRoute
      * @return void
      * @throws JsonException
      */
-    private function sendError(string $message, string $statusCode): void
+    public function sendError(string $message, string $statusCode): void
     {
         $response = [
             'message' => $message,
