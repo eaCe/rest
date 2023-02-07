@@ -90,5 +90,6 @@ class Rest
             'message' => 'Not found!',
             'status' => rex_response::HTTP_NOT_FOUND,
         ], JSON_THROW_ON_ERROR));
+        exit();
     }
 }
