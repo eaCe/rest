@@ -1,0 +1,17 @@
+{
+  "license": "MIT",
+  "scripts": {
+    "test": "./vendor/bin/pest --testdox"
+  },
+  "require-dev": {
+    "pestphp/pest": "^1.22",
+    "symfony/dotenv": "^6.0",
+    "psr/log": "1.1.4",
+    "guzzlehttp/guzzle": "^7.5"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
