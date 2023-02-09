@@ -33,8 +33,11 @@ Rest::registerRoute([
         // ...
     },
 ]);
+```
 
-// Full configuration
+## Full configuration
+
+```php
 [
     'route' => '/my-call/{articleID}',
     'permission' => 'admin', // addon[]
