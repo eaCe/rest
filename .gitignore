@@ -6,5 +6,5 @@ modules.xml
 *.ipr
 /.idea/
 .idea/
-/.phpunit.result.cache
 /vendor
+/.php-cs-fixer.cache

@@ -1,13 +1,17 @@
 {
   "license": "MIT",
   "scripts": {
-    "test": "./vendor/bin/pest --testdox"
+    "test": "./vendor/bin/pest --testdox",
+    "cs-dry": "php-cs-fixer fix -v --ansi --dry-run --config=.php-cs-fixer.dist.php",
+    "cs-fix": "php-cs-fixer fix -v --ansi --config=.php-cs-fixer.dist.php"
   },
   "require-dev": {
     "pestphp/pest": "^1.22",
     "symfony/dotenv": "^6.0",
     "psr/log": "1.1.4",
-    "guzzlehttp/guzzle": "^7.5"
+    "guzzlehttp/guzzle": "^7.5",
+    "redaxo/php-cs-fixer-config": "^2.0",
+    "friendsofphp/php-cs-fixer": "^3.14"
   },
   "config": {
     "allow-plugins": {

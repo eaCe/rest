@@ -31,16 +31,12 @@ class RestRoute
         $this->setPermission();
     }
 
-    /**
-     * @return string
-     */
     public function getPath(): string
     {
         return trim($this->route, '/');
     }
 
     /**
-     * @return void
      * @throws rex_exception
      */
     private function setRoute(): void
@@ -53,7 +49,6 @@ class RestRoute
     }
 
     /**
-     * @return void
      * @throws rex_exception
      */
     private function setMethods(): void
@@ -67,7 +62,6 @@ class RestRoute
     }
 
     /**
-     * @return void
      * @throws rex_exception
      */
     private function validateMethods(): void
@@ -82,7 +76,6 @@ class RestRoute
     }
 
     /**
-     * @return void
      * @throws JsonException
      */
     public function validateRequestMethod(): void
@@ -94,21 +87,17 @@ class RestRoute
         }
     }
 
-    /**
-     * @return string
-     */
     public function getRequestMethod(): string
     {
         return filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_ENCODED);
     }
 
     /**
-     * @return void
      * @throws rex_exception
      */
     private function setCallback(): void
     {
-        if (!isset($this->args['callback']) && $this->args['callback'] !== '') {
+        if (!isset($this->args['callback']) && '' !== $this->args['callback']) {
             throw new rex_exception('A callback must be defined');
         }
 
@@ -117,7 +106,6 @@ class RestRoute
     }
 
     /**
-     * @return void
      * @throws rex_exception
      */
     private function validateCallback(): void
@@ -127,12 +115,9 @@ class RestRoute
         }
     }
 
-    /**
-     * @return void
-     */
     public function setPermission(): void
     {
-        if (!isset($this->args['permission']) || $this->args['permission'] === '') {
+        if (!isset($this->args['permission']) || '' === $this->args['permission']) {
             $this->permission = '';
             return;
         }
@@ -140,9 +125,6 @@ class RestRoute
         $this->permission = $this->args['permission'];
     }
 
-    /**
-     * @return void
-     */
     public function setValidations(): void
     {
         if (!isset($this->args['validations']) || empty($this->args['validations'])) {
@@ -154,20 +136,18 @@ class RestRoute
     }
 
     /**
-     * @return void
      * @throws JsonException
      */
     public function validatePermission(): void
     {
-        if ($this->permission !== '') {
-            if (!rex::getUser() || ($this->permission === 'admin' && !rex::getUser()->isAdmin()) || !rex::getUser()->hasPerm($this->permission)) {
+        if ('' !== $this->permission) {
+            if (!rex::getUser() || ('admin' === $this->permission && !rex::getUser()->isAdmin()) || !rex::getUser()->hasPerm($this->permission)) {
                 $this->sendError('Only authenticated users can access the REST API', rex_response::HTTP_FORBIDDEN);
             }
         }
     }
 
     /**
-     * @return void
      * @throws JsonException
      */
     public function validateParams(): void
@@ -189,11 +169,6 @@ class RestRoute
         }
     }
 
-    /**
-     * @param string $type
-     * @param mixed $value
-     * @return bool
-     */
     private function validateType(string $type, mixed $value): bool
     {
         switch ($type) {
@@ -203,32 +178,23 @@ class RestRoute
                 return (bool) is_numeric($value);
             case 'bool':
             case 'boolean':
-                return is_bool($value) || in_array($value, array('true', 'false', '1', '0'), true);
+                return is_bool($value) || in_array($value, ['true', 'false', '1', '0'], true);
             default:
                 return false;
         }
     }
 
-    /**
-     * @param array $params
-     * @return void
-     */
     public function setParams(array $params): void
     {
         $this->params = $params;
     }
 
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return $this->params;
     }
 
     /**
-     * @param string $key
-     * @param string $type
      * @return array|bool|float|int|mixed|object|string|null
      */
     public function getParam(string $key, string $type = '')
@@ -241,7 +207,6 @@ class RestRoute
     }
 
     /**
-     * @return void
      * @throws rex_exception
      */
     public function executeCallback(): void
@@ -250,10 +215,8 @@ class RestRoute
     }
 
     /**
-     * @param array $content
-     * @param string $statusCode
-     * @return void
      * @throws JsonException
+     * @return void
      */
     public function sendContent(array $content, string $statusCode = rex_response::HTTP_OK)
     {
@@ -261,13 +224,10 @@ class RestRoute
         rex_response::sendContentType('application/json');
         rex_response::setStatus($statusCode);
         rex_response::sendContent(json_encode($content, JSON_THROW_ON_ERROR));
-        exit();
+        exit;
     }
 
     /**
-     * @param string $message
-     * @param string $statusCode
-     * @return void
      * @throws JsonException
      */
     public function sendError(string $message, string $statusCode): void
@@ -281,6 +241,6 @@ class RestRoute
         rex_response::sendContentType('application/json');
         rex_response::setStatus($statusCode);
         rex_response::sendContent(json_encode($response, JSON_THROW_ON_ERROR));
-        exit();
+        exit;
     }
 }
