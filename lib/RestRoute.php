@@ -80,7 +80,7 @@ class RestRoute
      */
     public function validateRequestMethod(): void
     {
-        $method = filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_ENCODED);
+        $method = strtoupper(rex_request::requestMethod());
 
         if (!in_array($method, $this->methods, true)) {
             $this->sendError(sprintf('Method "%s" not allowed!', $method), rex_response::HTTP_FORBIDDEN);
@@ -89,7 +89,7 @@ class RestRoute
 
     public function getRequestMethod(): string
     {
-        return filter_input(INPUT_SERVER, 'REQUEST_METHOD', FILTER_SANITIZE_ENCODED);
+        return rex_request::requestMethod();
     }
 
     /**
