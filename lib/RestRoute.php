@@ -256,7 +256,6 @@ class RestRoute
      *
      * @param string $type The type to validate against
      * @param mixed $value The value to validate
-     * @return bool
      */
     private function validateType(string $type, mixed $value): bool
     {
