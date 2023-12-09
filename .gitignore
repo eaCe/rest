@@ -8,3 +8,4 @@ modules.xml
 .idea/
 /vendor
 /.php-cs-fixer.cache
+/gitUsers.xml

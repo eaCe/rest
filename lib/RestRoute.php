@@ -330,7 +330,6 @@ class RestRoute
         rex_response::sendContentType('application/json');
         rex_response::setStatus($statusCode);
         rex_response::sendContent(json_encode($content, JSON_THROW_ON_ERROR));
-        exit;
     }
 
     /**
@@ -351,6 +350,5 @@ class RestRoute
         rex_response::sendContentType('application/json');
         rex_response::setStatus($statusCode);
         rex_response::sendContent(json_encode($response, JSON_THROW_ON_ERROR));
-        exit;
     }
 }
