@@ -2,14 +2,28 @@
 
 class RestRoute
 {
+    /** @var string The route to use */
     protected string $route;
+
+    /** @var array The allowed request methods */
     protected array $methods;
+
+    /** @var mixed The callback to execute */
     protected mixed $callback;
-    protected array $arguments;
+
+    /** @var array The arguments for the route */
     protected array $args;
+
+    /** @var array The parameters */
     protected array $params;
+
+    /** @var string The permission to check */
     protected string $permission;
+
+    /** @var array The validations */
     protected array $validations;
+
+    /** @var array The allowed request methods */
     private array $allowedMethods = [
         'GET',
         'POST',
@@ -31,12 +45,19 @@ class RestRoute
         $this->setPermission();
     }
 
+    /**
+     * Returns the route path.
+     *
+     * @return string The route
+     */
     public function getPath(): string
     {
         return trim($this->route, '/');
     }
 
     /**
+     * Sets the route.
+     *
      * @throws rex_exception
      */
     private function setRoute(): void
@@ -62,6 +83,8 @@ class RestRoute
     }
 
     /**
+     * Validates the request methods.
+     *
      * @throws rex_exception
      */
     private function validateMethods(): void
@@ -76,6 +99,8 @@ class RestRoute
     }
 
     /**
+     * Validates the request method.
+     *
      * @throws JsonException
      */
     public function validateRequestMethod(): void
@@ -87,12 +112,19 @@ class RestRoute
         }
     }
 
+    /**
+     * Returns the routes request method.
+     *
+     * @return string The request method
+     */
     public function getRequestMethod(): string
     {
         return rex_request::requestMethod();
     }
 
     /**
+     * Sets and validates the callback.
+     *
      * @throws rex_exception
      */
     private function setCallback(): void
@@ -106,6 +138,9 @@ class RestRoute
     }
 
     /**
+     * Validates the callback.
+     * The callback must be callable.
+     *
      * @throws rex_exception
      */
     private function validateCallback(): void
@@ -115,6 +150,9 @@ class RestRoute
         }
     }
 
+    /**
+     * Sets the permission.
+     */
     public function setPermission(): void
     {
         if (!isset($this->args['permission']) || '' === $this->args['permission']) {
@@ -125,6 +163,9 @@ class RestRoute
         $this->permission = $this->args['permission'];
     }
 
+    /**
+     * Sets the validations.
+     */
     public function setValidations(): void
     {
         if (!isset($this->args['validations']) || empty($this->args['validations'])) {
@@ -136,18 +177,23 @@ class RestRoute
     }
 
     /**
+     * Validates the permission.
+     *
      * @throws JsonException
      */
     public function validatePermission(): void
     {
         if ('' !== $this->permission) {
-            if (!rex::getUser() || ('admin' === $this->permission && !rex::getUser()->isAdmin()) || !rex::getUser()->hasPerm($this->permission)) {
+            if (!rex::getUser() || ('admin' === $this->permission && !rex::getUser()->isAdmin()) || !rex::getUser(
+            )->hasPerm($this->permission)) {
                 $this->sendError('Only authenticated users can access the REST API', rex_response::HTTP_FORBIDDEN);
             }
         }
     }
 
     /**
+     * Validates all params.
+     *
      * @throws JsonException
      */
     public function validateParams(): void
@@ -164,11 +210,21 @@ class RestRoute
             }
 
             if (!$this->validateType($type, $param)) {
-                $this->sendError(sprintf('Param "%s" needs to be "%s"!', $paramName, $type), rex_response::HTTP_BAD_REQUEST);
+                $this->sendError(
+                    sprintf('Param "%s" needs to be "%s"!', $paramName, $type),
+                    rex_response::HTTP_BAD_REQUEST,
+                );
             }
         }
     }
 
+    /**
+     * Validates the given value against the given type.
+     *
+     * @param string $type The type to validate against
+     * @param mixed $value The value to validate
+     * @return bool
+     */
     private function validateType(string $type, mixed $value): bool
     {
         switch ($type) {
@@ -189,12 +245,22 @@ class RestRoute
         $this->params = $params;
     }
 
+    /**
+     * Returns all params.
+     *
+     * @return array The parameters
+     */
     public function getParams(): array
     {
         return $this->params;
     }
 
     /**
+     * Returns the param with the given key.
+     * If the param does not exist, null is returned.
+     *
+     * @param string $key The key of the param
+     * @param string $type The type to cast the param to
      * @return array|bool|float|int|mixed|object|string|null
      */
     public function getParam(string $key, string $type = '')
@@ -207,6 +273,8 @@ class RestRoute
     }
 
     /**
+     * Executes the callback.
+     *
      * @throws rex_exception
      */
     public function executeCallback(): void
@@ -215,6 +283,10 @@ class RestRoute
     }
 
     /**
+     * Sends a response with the given content.
+     *
+     * @param array $content The content to send
+     * @param string $statusCode The status code to send
      * @throws JsonException
      * @return void
      */
@@ -228,6 +300,8 @@ class RestRoute
     }
 
     /**
+     * Sends an error response.
+     *
      * @throws JsonException
      */
     public function sendError(string $message, string $statusCode): void

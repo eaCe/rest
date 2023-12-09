@@ -2,10 +2,16 @@
 
 class Rest
 {
-    public static $baseRoute = '';
-    private static $routes = [];
+    /** @var string The base route for all routes, defaults to 'api' */
+    public static string $baseRoute = '';
+
+    /** @var array The registered routes */
+    private static array $routes = [];
 
     /**
+     * Registers a new route with the given arguments.
+     *
+     * @param array $routeArgs The arguments for the route
      * @throws rex_exception
      */
     public static function registerRoute(array $routeArgs): void
@@ -17,11 +23,21 @@ class Rest
         self::$routes[] = new RestRoute($routeArgs);
     }
 
+    /**
+     * Returns all registered routes.
+     *
+     * @return array The registered routes
+     */
     public static function getRoutes(): array
     {
         return self::$routes;
     }
 
+    /**
+     * Returns the current path.
+     *
+     * @return string The current path
+     */
     public static function getCurrentPath(): string
     {
         $url = parse_url($_SERVER['REQUEST_URI']);
@@ -29,20 +45,22 @@ class Rest
     }
 
     /**
+     * Handles all registered routes.
+     *
      * @throws JsonException
      * @throws rex_exception
      */
-    public static function handleRoutes(): bool
+    public static function handleRoutes(): void
     {
         if ('' === self::$baseRoute) {
-            return false;
+            return;
         }
 
         $currentPath = self::getCurrentPath();
         $pathSegments = explode('/', $currentPath);
 
         if ($pathSegments[0] !== self::$baseRoute) {
-            return false;
+            return;
         }
 
         foreach (self::$routes as $route) {
@@ -56,6 +74,9 @@ class Rest
             array_shift($matches);
             preg_match_all('/\{[a-zA-Z0-9\_\-]+\}/', $routePath, $keys);
 
+            /**
+             * Extract the matched values.
+             */
             if (!empty($matches)) {
                 for ($i = 0, $iMax = count($matches); $i < $iMax; ++$i) {
                     $matches[trim($keys[0][$i], '{}')] = $matches[$i];
