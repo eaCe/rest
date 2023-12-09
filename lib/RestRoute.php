@@ -23,6 +23,9 @@ class RestRoute
     /** @var array The validations */
     protected array $validations;
 
+    /** @var string|null The API Key */
+    protected string|null $apiKey;
+
     /** @var array The allowed request methods */
     private array $allowedMethods = [
         'GET',
@@ -42,6 +45,7 @@ class RestRoute
         $this->setMethods();
         $this->setCallback();
         $this->setValidations();
+        $this->setApiKey();
         $this->setPermission();
     }
 
@@ -174,6 +178,35 @@ class RestRoute
         }
 
         $this->validations = $this->args['validations'];
+    }
+
+    /**
+     * Sets the api key.
+     */
+    public function setApiKey(): void
+    {
+        if (!isset($this->args['api_key']) || empty($this->args['api_key'])) {
+            $this->apiKey = null;
+            return;
+        }
+
+        $this->apiKey = (string) $this->args['api_key'];
+    }
+
+    /**
+     * Validates the API key.
+     *
+     * @throws rex_exception|JsonException
+     */
+    public function validateApiKey(): void
+    {
+        if (null !== $this->apiKey) {
+            $apiKey = rex::getRequest()->headers->get('API-KEY');
+
+            if ($apiKey !== $this->apiKey) {
+                $this->sendError('Invalid API key', rex_response::HTTP_FORBIDDEN);
+            }
+        }
     }
 
     /**

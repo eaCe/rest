@@ -90,6 +90,7 @@ class Rest
 
             $route->setParams($matches);
             $route->validateRequestMethod();
+            $route->validateApiKey();
             $route->validatePermission();
             $route->validateParams();
             $route->executeCallback();
