@@ -211,7 +211,7 @@ class RestRoute
 
             if (!$this->validateType($type, $param)) {
                 $this->sendError(
-                    sprintf('Param "%s" needs to be "%s"!', $paramName, $type),
+                    sprintf('Invalid parameter type for "%s"!', $paramName),
                     rex_response::HTTP_BAD_REQUEST,
                 );
             }
@@ -231,7 +231,9 @@ class RestRoute
             case 'int':
                 return (bool) filter_var($value, FILTER_VALIDATE_INT);
             case 'number':
-                return (bool) is_numeric($value);
+                return is_numeric($value);
+            case 'string':
+                return is_string($value);
             case 'bool':
             case 'boolean':
                 return is_bool($value) || in_array($value, ['true', 'false', '1', '0'], true);
@@ -302,6 +304,8 @@ class RestRoute
     /**
      * Sends an error response.
      *
+     * @param string $message The error message
+     * @param string $statusCode The status code to send. E.g. rex_response::HTTP_FORBIDDEN
      * @throws JsonException
      */
     public function sendError(string $message, string $statusCode): void
