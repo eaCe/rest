@@ -106,14 +106,18 @@ class RestRoute
      * Validates the request method.
      *
      * @throws JsonException
+     * @return bool True if the request method is valid, otherwise false
      */
-    public function validateRequestMethod(): void
+    public function validateRequestMethod(): bool
     {
         $method = strtoupper(rex_request::requestMethod());
 
         if (!in_array($method, $this->methods, true)) {
             $this->sendError(sprintf('Method "%s" not allowed!', $method), rex_response::HTTP_FORBIDDEN);
+            return false;
         }
+
+        return true;
     }
 
     /**
@@ -197,42 +201,51 @@ class RestRoute
      * Validates the API key.
      *
      * @throws rex_exception|JsonException
+     * @return bool True if the API key is valid, otherwise false
      */
-    public function validateApiKey(): void
+    public function validateApiKey(): bool
     {
         if (null !== $this->apiKey) {
             $apiKey = rex::getRequest()->headers->get('API-KEY');
 
             if ($apiKey !== $this->apiKey) {
                 $this->sendError('Invalid API key', rex_response::HTTP_FORBIDDEN);
+                return false;
             }
         }
+
+        return true;
     }
 
     /**
      * Validates the permission.
      *
      * @throws JsonException
+     * @return bool True if the permission is valid, otherwise false
      */
-    public function validatePermission(): void
+    public function validatePermission(): bool
     {
         if ('' !== $this->permission) {
             if (!rex::getUser() || ('admin' === $this->permission && !rex::getUser()->isAdmin()) || !rex::getUser(
             )->hasPerm($this->permission)) {
                 $this->sendError('Only authenticated users can access the REST API', rex_response::HTTP_FORBIDDEN);
+                return false;
             }
         }
+
+        return true;
     }
 
     /**
      * Validates all params.
      *
      * @throws JsonException
+     * @return bool True if all params are valid, otherwise false
      */
-    public function validateParams(): void
+    public function validateParams(): bool
     {
         if (empty($this->validations)) {
-            return;
+            return true;
         }
 
         foreach ($this->validations as $paramName => $type) {
@@ -247,8 +260,11 @@ class RestRoute
                     sprintf('Invalid parameter type for "%s"!', $paramName),
                     rex_response::HTTP_BAD_REQUEST,
                 );
+                return false;
             }
         }
+
+        return true;
     }
 
     /**
@@ -350,5 +366,6 @@ class RestRoute
         rex_response::sendContentType('application/json');
         rex_response::setStatus($statusCode);
         rex_response::sendContent(json_encode($response, JSON_THROW_ON_ERROR));
+
     }
 }

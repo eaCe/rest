@@ -105,11 +105,11 @@ class Rest
              * Route found, validate, execute and return to stop further execution.
              */
             $route->setParams($matches);
-            $route->validateRequestMethod();
-            $route->validateApiKey();
-            $route->validatePermission();
-            $route->validateParams();
-            $route->executeCallback();
+
+            /**
+             * Execute the route.
+             */
+            self::executeRoute($route);
             return;
         }
 
@@ -123,5 +123,45 @@ class Rest
             'message' => 'Not found!',
             'status' => rex_response::HTTP_NOT_FOUND,
         ], JSON_THROW_ON_ERROR));
+    }
+
+    /**
+     * Executes the given route.
+     *
+     * @throws JsonException
+     * @throws rex_exception
+     */
+    private static function executeRoute(RestRoute $route): void
+    {
+        /**
+         * Return if any of the validation methods returns false.
+         * Otherwise the route would be executed even if the validation fails.
+         */
+
+        $validMethod = $route->validateRequestMethod();
+
+        if (!$validMethod) {
+            return;
+        }
+
+        $validKey = $route->validateApiKey();
+
+        if (!$validKey) {
+            return;
+        }
+
+        $validPermission = $route->validatePermission();
+
+        if (!$validPermission) {
+            return;
+        }
+
+        $validParams = $route->validateParams();
+
+        if (!$validParams) {
+            return;
+        }
+
+        $route->executeCallback();
     }
 }
