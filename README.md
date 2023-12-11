@@ -22,6 +22,7 @@ function myCallbackFn($route) {
     ];
 
     $route->sendContent($data);
+    exit;
 }
 
 // https://domain.de/api/my-call/12
@@ -55,6 +56,7 @@ Rest::registerRoute([
         ];
 
         $route->sendContent($data);
+        exit;
     },
 ]
 ```
